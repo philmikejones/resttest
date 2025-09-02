@@ -6,7 +6,6 @@ import requests
 # base_url + crime_type + date + coords
 # It will return all crimes for the given month within a 1 mile radius of the coords
 
-base_url = "https://data.police.uk/api/crimes-street/"
 
 ## Date
 def get_api_date() -> str:
@@ -25,19 +24,35 @@ def get_api_date() -> str:
     response = response[:7]  # YYYY-MM-DD is returned but it expects YYYY-MM
     return response
 
+## crime types
+## https://data.police.uk/api/crime-categories?date=2024-01
+# all-crime
+# anti-social-behaviour
+# bicycle-theft
+# burglary
+# criminal-damage-arson
+# drugs
+# other-theft
+# possession-of-weapons
+# public-order
+# robbery
+# shoplifting
+# theft-from-the-person
+# vehicle-crime
+# violent-crime
+# other-crime
 
 
-# Example request with poly area:
-# https://data.police.uk/api/crimes-street/all-crime?date=2024-01&lat=52.629729&lng=-1.131592
+def get_records(date, crime_type = "burglary", lat = 53.1282, lng = -1.2677):
+    """
+    Downloads the requested records from the data.police.uk API
+    Defaults to burglaries in the treatment area for the latest month
 
-
-
-#lat = 53.1282
-#lng = -1.2677
-#
-#query_url = base_url + crime_type + "?date=" + date + "&lat=" + str(lat) + "&lng=" + str(lng)
-
-def get_resource():
+    Returns:
+    str A string with the json text from the API
+    """
+    base_url = "https://data.police.uk/api/crimes-street/"
+    query_url = base_url + crime_type + "?date=" + date + "&lat=" + str(lat) + "&lng=" + str(lng)
     response = requests.get(query_url)
     if response.status_code == 200:
         return response.json()
@@ -46,5 +61,8 @@ def get_resource():
         return None
 
 if __name__ == "__main__":
-    date = get_api_date()
-    print(date)
+    latest_date = get_api_date()
+    print(latest_date)
+
+    burglaries = get_records(date = latest_date)
+    print(burglaries)
