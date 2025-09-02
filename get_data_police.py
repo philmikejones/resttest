@@ -1,4 +1,7 @@
 import requests
+import json
+import pandas as pd
+from io import StringIO  # for reading json strings into pandas
 
 ## Documentation from:
 # https://data.police.uk/docs/method/crime-street/
@@ -65,4 +68,6 @@ if __name__ == "__main__":
     print(latest_date)
 
     burglaries = get_records(date = latest_date)
+    burglaries = json.dumps(burglaries)  # converts ' to " for correct json
+    burglaries = pd.read_json(StringIO(burglaries))
     print(burglaries)
